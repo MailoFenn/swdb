@@ -2,25 +2,25 @@ import React from 'react';
 
 import './RandomPlanet.css';
 
-const RandomPlanet = () => {
+const RandomPlanet = ({state}) => {
     return (
       <div className="random-planet jumbotron rounded">
         <img className="planet-image"
-             src={`https://starwars-visualguide.com/assets/img/planets/12.jpg`} />
+             src={`https://starwars-visualguide.com/assets/img/planets/11.jpg`} />
         <div>
-          <h4>{'Tatooin'}</h4>
+          <h4>{state.name}</h4>
           <ul className="list-group list-group-flush">
             <li className="list-group-item">
               <span className="term">Population</span>
-              <span>{'12000'}</span>
+              <span>{state.population}</span>
             </li>
             <li className="list-group-item">
               <span className="term">Rotation Period</span>
-              <span>{'23'}</span>
+              <span>{state.rotation_period}</span>
             </li>
             <li className="list-group-item">
               <span className="term">Diameter</span>
-              <span>{'125900'}</span>
+              <span>{state.diameter}</span>
             </li>
           </ul>
         </div>
