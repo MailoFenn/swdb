@@ -8,14 +8,16 @@ import SwapiService from "../../Services/SwapiService";
 
 export default class App extends Component {
     swapi = new SwapiService()
-    random = this.swapi.getPlanet(1).then(res => res)
+    randomId = Math.floor(Math.random() * 17) + 2
     state = {
-        randomPlanet: {}
+        randomPlanet: {},
+        personList: []
     }
 
     constructor() {
         super();
         this.updateRandomPlanet()
+        this.updatePersonList()
     }
 
     onRandomPlanet(randomPlanet) {
@@ -23,8 +25,15 @@ export default class App extends Component {
     }
 
     updateRandomPlanet() {
-        this.swapi.getPlanet(1).then((res) => {
+        this.swapi.getPlanet(this.randomId).then((res) => {
             this.onRandomPlanet(res)
+        })
+    }
+
+    updatePersonList() {
+        this.swapi.getAllPeople().then(person => {
+            let personList = [...person]
+            this.setState({personList})
         })
     }
 
@@ -34,10 +43,13 @@ export default class App extends Component {
                 <Header/>
                 <RandomPlanet
                     state={this.state.randomPlanet}
+                    id={this.randomId}
                 />
                 <div className="row mb2">
                     <div className="col-md-6">
-                        <ItemList/>
+                        <ItemList
+                            state={this.state.personList}
+                        />
                     </div>
                     <div className="col-md-6">
                         <PersonDetail/>
