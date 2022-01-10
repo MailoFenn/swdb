@@ -36,8 +36,15 @@ export default class SwapiService {
     //     return await this.getResponse(url)
     // }
 
+    _extractId(item) {
+        const idRegExp = /\/([0-9]*)\/$/
+        const id = item.url.match(idRegExp)[1]
+        return id
+    }
+
     _transformPlanet(planet) {
         return {
+            id: this._extractId(planet),
             name: planet.name,
             population: planet.population,
             rotationPeriod: planet.rotation_period,

@@ -10,8 +10,11 @@ export default class App extends Component {
     swapi = new SwapiService()
     randomId = Math.floor(Math.random() * 17) + 2
     state = {
-        randomPlanet: {},
-        personList: []
+        randomPlanet: {
+            data: {},
+            loading: true
+        },
+        personList: [],
     }
 
     constructor() {
@@ -21,7 +24,12 @@ export default class App extends Component {
     }
 
     onRandomPlanet(randomPlanet) {
-        this.setState({randomPlanet})
+        this.setState({
+            randomPlanet: {
+                data: randomPlanet,
+                loading: false
+            }
+        })
     }
 
     updateRandomPlanet() {
@@ -42,8 +50,9 @@ export default class App extends Component {
             <div>
                 <Header/>
                 <RandomPlanet
-                    state={this.state.randomPlanet}
+                    state={this.state.randomPlanet.data}
                     id={this.randomId}
+                    loading={this.state.randomPlanet.loading}
                 />
                 <div className="row mb2">
                     <div className="col-md-6">
