@@ -3,6 +3,9 @@ export default class SwapiService {
 
     getResponse = async (url) => {
         const result = await fetch(url)
+        if (!result.ok) {
+            throw new Error(`could not fetch ${url}, received ${result.status}`)
+        }
         return await result.json()
     }
 

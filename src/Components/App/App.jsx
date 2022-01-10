@@ -12,7 +12,8 @@ export default class App extends Component {
     state = {
         randomPlanet: {
             data: {},
-            loading: true
+            loading: true,
+            isError: false
         },
         personList: [],
     }
@@ -27,15 +28,26 @@ export default class App extends Component {
         this.setState({
             randomPlanet: {
                 data: randomPlanet,
-                loading: false
+                loading: false,
+                isError: false
+            }
+        })
+    }
+
+    onError() {
+        this.setState({
+            randomPlanet: {
+                data: {},
+                loading: false,
+                isError: true
             }
         })
     }
 
     updateRandomPlanet() {
-        this.swapi.getPlanet(this.randomId).then((res) => {
-            this.onRandomPlanet(res)
-        })
+        this.swapi.getPlanet(this.randomId)
+            .then(res => {this.onRandomPlanet(res)})
+            .catch(err => {this.onError()})
     }
 
     updatePersonList() {
@@ -51,8 +63,8 @@ export default class App extends Component {
                 <Header/>
                 <RandomPlanet
                     state={this.state.randomPlanet.data}
-                    id={this.randomId}
                     loading={this.state.randomPlanet.loading}
+                    isError={this.state.randomPlanet.isError}
                 />
                 <div className="row mb2">
                     <div className="col-md-6">
