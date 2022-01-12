@@ -8,20 +8,42 @@ import SwapiService from "../../Services/SwapiService";
 
 export default class App extends Component {
     swapi = new SwapiService()
-    randomId = Math.floor(Math.random() * 17) + 2
     state = {
         randomPlanet: {
             data: {},
             loading: true,
             isError: false
         },
-        personList: [],
+        personList: {
+            data: [],
+            loading: true,
+            isError: false
+        },
+        selectedItem: {
+            data: {},
+            loading: true,
+            isError: false
+        },
+        selectedId: null
     }
 
-    constructor() {
-        super();
+    componentDidMount() {
         this.updateRandomPlanet()
+        this.interval = setInterval(this.updateRandomPlanet, 30000)
         this.updatePersonList()
+    }
+
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        if(prevState.selectedId !== this.state.selectedId) {
+            this.updatePerson()
+        }
+    }
+
+    onItemClick = (id) => {
+        this.setState({
+            selectedId: id
+        })
+        // this.updatePerson()
     }
 
     onRandomPlanet(randomPlanet) {
@@ -44,16 +66,35 @@ export default class App extends Component {
         })
     }
 
-    updateRandomPlanet() {
-        this.swapi.getPlanet(this.randomId)
+    updateRandomPlanet = () => {
+        const randomId = Math.floor(Math.random() * 17) + 2
+        this.swapi.getPlanet(randomId)
             .then(res => {this.onRandomPlanet(res)})
-            .catch(err => {this.onError()})
+            .catch(this.onError)
+    }
+
+    updatePerson = () => {
+        console.log('y')
+        this.swapi.getPerson(this.state.selectedId).then(person => {
+            this.setState({
+                selectedItem: {
+                    data: person,
+                    loading: false,
+                    isError: false
+                }
+            })
+        })
     }
 
     updatePersonList() {
-        this.swapi.getAllPeople().then(person => {
-            let personList = [...person]
-            this.setState({personList})
+        this.swapi.getAllPeople().then(persons => {
+            this.setState({
+                personList: {
+                    data: persons,
+                    loading: false,
+                    isError: false
+            }
+            })
         })
     }
 
@@ -69,11 +110,16 @@ export default class App extends Component {
                 <div className="row mb2">
                     <div className="col-md-6">
                         <ItemList
-                            state={this.state.personList}
+                            state={this.state.personList.data}
+                            loading={this.state.personList.loading}
+                            onPersonClick={this.onItemClick}
                         />
                     </div>
                     <div className="col-md-6">
-                        <PersonDetail/>
+                        <PersonDetail
+                            selectedItem={this.state.selectedItem.data}
+                            selectedId={this.state.selectedId}
+                        />
                     </div>
                 </div>
             </div>
