@@ -74,7 +74,6 @@ export default class App extends Component {
     }
 
     updatePerson = () => {
-        console.log('y')
         this.swapi.getPerson(this.state.selectedId).then(person => {
             this.setState({
                 selectedItem: {
