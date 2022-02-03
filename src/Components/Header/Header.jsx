@@ -1,7 +1,7 @@
 import React from "react";
 import "./Header.css"
 
-const Header = () => {
+const Header = ({getAllPlanet, getAllPerson, getAllStarship}) => {
     return (
         <div className={'header d-flex'}>
             <h3>
@@ -11,13 +11,21 @@ const Header = () => {
             </h3>
             <ul className="d-flex">
                 <li>
-                    <a href="#">People</a>
+                    <a href="#" onClick={() => {
+                        getAllPerson()
+                    }
+                    }>People</a>
                 </li>
                 <li>
-                    <a href="#">Planets</a>
+                    <a href='#' onClick={() => {
+                        getAllPlanet()
+                    }}>Planets</a>
                 </li>
                 <li>
-                    <a href="#">Starships</a>
+                    <a href="#" onClick={() => {
+                        getAllStarship()
+                    }
+                    }>Starships</a>
                 </li>
             </ul>
         </div>

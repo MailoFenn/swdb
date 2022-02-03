@@ -29,15 +29,15 @@ export default class SwapiService {
         return this._transformPerson(res)
     }
 
-    // getAllStarships = async () => {
-    //     const url = `${this._baseUrl}/starships/`
-    //     return await this._transformPlanet(this.getResponse(url))
-    // }
-    //
-    // getStarship = async (id) => {
-    //     const url = `${this._baseUrl}/starships/${id}/`
-    //     return await this.getResponse(url)
-    // }
+    getAllStarships = async () => {
+        const res = await this.getResponse(`${this._baseUrl}/starships/`)
+        return res.results.map(this._transformStarship)
+    }
+
+    getStarship = async (id) => {
+        const url = `${this._baseUrl}/starships/${id}/`
+        return await this.getResponse(url)
+    }
 
     _extractId(item) {
         const idRegExp = /\/([0-9]*)\/$/
@@ -59,6 +59,13 @@ export default class SwapiService {
         return {
             id: this._extractId(person),
             name: person.name
+        }
+    }
+
+    _transformStarship = (starship) => {
+        return {
+            id: this._extractId(starship),
+            name: starship.name
         }
     }
 }

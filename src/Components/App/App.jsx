@@ -5,6 +5,7 @@ import RandomPlanet from "../RandomPlanet/RandomPlanet";
 import ItemList from "../ItemList/ItemList";
 import PersonDetail from "../PersonDetail/PersonDetail";
 import SwapiService from "../../Services/SwapiService";
+import Row from "../Row/Row";
 
 export default class App extends Component {
     swapi = new SwapiService()
@@ -14,7 +15,7 @@ export default class App extends Component {
             loading: true,
             isError: false
         },
-        personList: {
+        itemList: {
             data: [],
             loading: true,
             isError: false
@@ -30,7 +31,7 @@ export default class App extends Component {
     componentDidMount() {
         this.updateRandomPlanet()
         this.interval = setInterval(this.updateRandomPlanet, 30000)
-        this.updatePersonList()
+        this.updateItemList(this.swapi.getAllPeople)
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
@@ -43,7 +44,6 @@ export default class App extends Component {
         this.setState({
             selectedId: id
         })
-        // this.updatePerson()
     }
 
     onRandomPlanet(randomPlanet) {
@@ -85,42 +85,53 @@ export default class App extends Component {
         })
     }
 
-    updatePersonList() {
-        this.swapi.getAllPeople().then(persons => {
+    updateItemList(getData) {
+        this.setState({
+            itemList: {
+                loading: true
+            }
+        })
+        getData().then(planet => {
             this.setState({
-                personList: {
-                    data: persons,
+                itemList: {
+                    data: planet,
                     loading: false,
                     isError: false
-            }
+                }
             })
         })
     }
 
     render() {
+        const itemList = <ItemList
+                            state={this.state.itemList.data}
+                            loading={this.state.itemList.loading}
+                            onPersonClick={this.onItemClick}
+                        />
+
+        const personDetails = <PersonDetail
+                            selectedItem={this.state.selectedItem.data}
+                            selectedId={this.state.selectedId}
+                        />
         return (
             <div>
-                <Header/>
+                <Header
+                    getAllPlanet={() => {
+                        this.updateItemList(this.swapi.getAllPlanets)
+                    }}
+                    getAllPerson={() => {
+                        this.updateItemList(this.swapi.getAllPeople)
+                    }}
+                    getAllStarship={() => {
+                        this.updateItemList(this.swapi.getAllStarships)
+                    }}
+                />
                 <RandomPlanet
                     state={this.state.randomPlanet.data}
                     loading={this.state.randomPlanet.loading}
                     isError={this.state.randomPlanet.isError}
                 />
-                <div className="row mb2">
-                    <div className="col-md-6">
-                        <ItemList
-                            state={this.state.personList.data}
-                            loading={this.state.personList.loading}
-                            onPersonClick={this.onItemClick}
-                        />
-                    </div>
-                    <div className="col-md-6">
-                        <PersonDetail
-                            selectedItem={this.state.selectedItem.data}
-                            selectedId={this.state.selectedId}
-                        />
-                    </div>
-                </div>
+                <Row left={itemList} right={personDetails}/>
             </div>
         )
     }
